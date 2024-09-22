@@ -15,7 +15,7 @@ def csv2dict(anno_path, dataset_type):
     inputs_list = pandas.read_csv(anno_path)
     inputs_list = (inputs_list.to_dict()['name|video|start|end|speaker|orth|translation'].values())
     info_dict = dict()
-    info_dict['prefix'] = anno_path.rsplit("/", 3)[0] + "/features/fullFrame-210x260px"
+    info_dict['prefix'] = anno_path.rsplit("/", 3)[0] + "/features/fullFrame-256x256px"
     print(f"Generate information dict from {anno_path}")
     for file_idx, file_info in tqdm(enumerate(inputs_list), total=len(inputs_list)):
         name, video, start, end, speaker, orth, translation = file_info.split("|")
@@ -52,7 +52,7 @@ def sign_dict_update(total_dict, info):
     return total_dict
 
 
-def resize_img(img_path, dsize='210x260px'):
+def resize_img(img_path, dsize='256x256px'):
     dsize = tuple(int(res) for res in re.findall("\d+", dsize))
     img = cv2.imread(img_path)
     img = cv2.resize(img, dsize, interpolation=cv2.INTER_LANCZOS4)
@@ -64,7 +64,7 @@ def resize_dataset(video_idx, dsize, info_dict):
     img_list = glob.glob(f"{info_dict['prefix']}/{info['folder']}")
     for img_path in img_list:
         rs_img = resize_img(img_path, dsize=dsize)
-        rs_img_path = img_path.replace("210x260px", dsize)
+        rs_img_path = img_path.replace("256x256px", dsize)
         rs_img_dir = os.path.dirname(rs_img_path)
         if not os.path.exists(rs_img_dir):
             os.makedirs(rs_img_dir)
